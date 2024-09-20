@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string("position");
             $table->string("last_position");
             $table->string("jci_career");
-            $table->
             $table->timestamps();
         });
     }
