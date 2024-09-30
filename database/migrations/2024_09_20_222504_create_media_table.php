@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('media', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Candidate::class)->constrained('candidates');
-            $table->string('type');
+            $table->enum('type',['video', 'photo']);
             $table->text('url');
             $table->integer('duration')->nullable();
             $table->timestamps();

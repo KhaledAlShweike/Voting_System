@@ -14,4 +14,14 @@ class Candidate extends Model
     return $this->hasMany(Media::class);
 }
 
+public function Category()
+{
+    return $this->belongsTo(Category::class);
+}
+
+public function votes()
+    {
+        return $this->hasMany(Votes::class);
+    }
+
 }
