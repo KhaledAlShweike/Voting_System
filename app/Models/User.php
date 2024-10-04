@@ -9,8 +9,8 @@ class User extends Model
 {
     use HasFactory;
 
-    public function Votes()
+    public function Vote()
     {
-        return $this->hasMany(Votes::class);
+        return $this->hasMany(Vote::class);
     }
 }

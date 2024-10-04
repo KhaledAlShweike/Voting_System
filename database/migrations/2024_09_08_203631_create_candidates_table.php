@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string("last_name");
             $table->string("position");
             $table->string("last_position");
-            $table->string("jci_career");
+            $table->text("jci_career");
             $table->foreignIdFor(Category::class)->onDelete('cascade');
             $table->timestamps();
         });

@@ -19,9 +19,9 @@ public function Category()
     return $this->belongsTo(Category::class);
 }
 
-public function votes()
+public function Vote()
     {
-        return $this->hasMany(Votes::class);
+        return $this->hasMany(Vote::class);
     }
 
 }

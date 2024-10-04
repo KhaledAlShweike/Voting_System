@@ -9,14 +9,14 @@ class Category extends Model
 {
     use HasFactory;
 
-    public function Cndidate()
+    public function Candidate()
 {
     return $this->hasMany(Candidate::class);
 }
 
-public function votes()
+public function Vote()
 {
-    return $this->hasMany(Votes::class);
+    return $this->hasMany(Vote::class);
 }
 
 }
