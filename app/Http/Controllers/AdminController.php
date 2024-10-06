@@ -1,16 +1,71 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use illuminate\Support\Facades\Auth;
 use App\Models\Admin;
 use Illuminate\Http\Request;
-
+use App\Models\Category;
+use App\Models\Candidate;
 class AdminController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+
+     public function showLoginForm()
+     {
+         return view('admin.login');
+     }
+
+     public function login(Request $request)
+     {
+         $request->validate([
+             'code' => 'required',
+         ]);
+
+         // Check if the admin code exists
+         $admin = Admin::where('code', $request->code)->first();
+
+         if ($admin) {
+             // Log in the admin manually
+             Auth::login($admin);
+
+             // Redirect to the admin dashboard
+             return redirect()->route('admin.dashboard');
+         }
+
+         return redirect()->back()->withErrors(['code' => 'Invalid admin code.']);
+     }
+
+     public function dashboard()
+{
+    $categories = Category::with(['candidates' => function ($query) {
+        $query->orderBy('votes', 'desc')->limit(1); // Assuming a 'votes' column exists
+    }])->get();
+
+    return view('admin.dashboard', compact('categories'));
+}
+
+public function showCategory($id)
+{
+    $category = Category::with('candidates')->findOrFail($id);
+    return view('admin.category', compact('category'));
+}
+
+public function storeCandidate(Request $request)
+{
+    $request->validate([
+        'first_name' => 'required',
+        'last_name' => 'required',
+        'position' => 'required',
+        'category_id' => 'required|exists:categories,id',
+    ]);
+
+    Candidate::create($request->all());
+
+    return redirect()->route('admin.category.show', $request->category_id)->with('success', 'Candidate created successfully');
+}
+     public function index()
     {
         //
     }
