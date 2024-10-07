@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Models\Candidate;
 use App\Models\Vote;
 use Illuminate\Http\Request;
@@ -10,23 +9,24 @@ use Illuminate\Http\JsonResponse;
 
 class VoteController extends Controller
 {
+    /**
+     * Cast a vote for a candidate by an authenticated user.
+     *
+     * @param Request $request
+     * @param int $candidateId
+     * @return JsonResponse
+     */
     public function vote(Request $request, $candidateId): JsonResponse
     {
-        // Get the authenticated user
-        $user = auth()->user();
+        // Ensure the user is authenticated using Sanctum
+        $user = $request->user();  // Use Sanctum-provided method to get the authenticated user
 
-        if (!$user) {
-            return response()->json(['message' => 'Unauthenticated: Could not find user'], 401);
-        }
-
-        // Proceed if the user is authenticated
-        $userId = $user->id;
-
+        // Find the candidate and get the category
         $candidate = Candidate::findOrFail($candidateId);
         $categoryId = $candidate->category_id;
 
-        // Check if the user has already voted for any candidate in this category
-        $existingVote = Vote::where('user_id', $userId)
+        // Check if the user has already voted in this category
+        $existingVote = Vote::where('user_id', $user->id)
                             ->where('category_id', $categoryId)
                             ->first();
 
@@ -36,12 +36,11 @@ class VoteController extends Controller
 
         // Cast the vote
         Vote::create([
-            'user_id' => $userId,
+            'user_id' => $user->id,
             'candidate_id' => $candidateId,
             'category_id' => $categoryId
         ]);
 
         return response()->json(['message' => 'Vote successfully cast!'], 200);
     }
-
 }
